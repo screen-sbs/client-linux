@@ -18,7 +18,7 @@ source $confPath$confFile
 mkdir -p $confPath
 
 if [ "$token" = "" ] ; then
-    echo "Configure your upload token in $confPath"
+    echo "Configure your upload token in $confPath$confFile"
 	exit 1
 fi
 
