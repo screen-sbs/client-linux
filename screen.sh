@@ -9,6 +9,7 @@ if ! test -f "$confPath$confFile"; then
 	touch $confPath$confFile
 	echo 'saveLocally=true' > $confPath$confFile
 	echo 'openLink=true' >> $confPath$confFile
+	echo 'copyLink=true' >> $confPath$confFile
 	echo 'savePath="~/Documents/screen.sbs/"' >> $confPath$confFile
 	echo 'uploadUrl="https://upload.screen.sbs/"' >> $confPath$confFile
 	echo 'token=""' >> $confPath$confFile
@@ -55,6 +56,9 @@ function upload {
 	# assume upload was successful if response body starts with http
 	if [[ $response == http* ]]; then
 		echo $response
+		if [ "$copyLink" = true ]; then
+			echo $response | xclip -selection "clipboard"
+		fi
 		if [ "$openLink" = true ]; then
 			xdg-open $response
 		fi
