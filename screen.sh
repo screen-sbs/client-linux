@@ -1,7 +1,7 @@
 #!/bin/bash
 
 confPath="~/.config/"
-confFile="screen.conf"
+confFile="screen-sbs.conf"
 confPath="${confPath/#\~/$HOME}"
 
 if ! test -f "$confPath$confFile"; then
