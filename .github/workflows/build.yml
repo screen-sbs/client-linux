@@ -12,20 +12,28 @@ jobs:
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
+      - name: install dependencies
+        run: apt-get install rpm
 # build
       - name: Build client
-        run: bash build-deb.sh $RELEASE_VERSION
+        run: cd build && bash build.sh $RELEASE_VERSION
 
 # artifacts
       - uses: actions/upload-artifact@v2
         with:
-          name: client
+          name: deb
           path: build/screen-sbs*_all.deb
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: rpm
+          path: build/rpm/RPMS/noarch/screen-sbs-*.noarch.rpm
 
 
 # release
       - uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: build/screen-sbs*_all.deb
-            
+          files: |
+            build/screen-sbs*_all.deb
+            build/rpm/RPMS/noarch/screen-sbs-*.noarch.rpm
