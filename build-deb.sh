@@ -9,7 +9,7 @@ else
 	version=$1
 fi
 
-buildName="screen-sbs_${version}-1_all"
+buildName="screen-sbs_${version}_all"
 mkdir -p build/$buildName/{usr/bin,DEBIAN}
 cd build
 cp ../screen.sh $buildName/usr/bin/screen
