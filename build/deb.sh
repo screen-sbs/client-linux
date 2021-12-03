@@ -4,7 +4,7 @@ source lib/params.sh
 buildName="screen-sbs_${version}-${revision}_all"
 mkdir -p deb/$buildName/{usr/bin,DEBIAN}
 cd deb
-cp ../../screen.sh $buildName/usr/bin/screen
+cp ../../screen.sh $buildName/usr/bin/screen-sbs
 
 echo "Package: screen-sbs
 Version: ${version}-${revision}

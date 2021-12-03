@@ -20,10 +20,10 @@ screen-sbs uploader
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
-install -m 0755 ../screen.sh %{buildroot}/%{_bindir}/screen
+install -m 0755 ../screen.sh %{buildroot}/%{_bindir}/screen-sbs
 
 %files
-%{_bindir}/screen
+%{_bindir}/screen-sbs
 
 %changelog" \
 > rpm/screen-sbs.spec
