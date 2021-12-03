@@ -11,7 +11,7 @@ if ! test -f "$confPath$confFile"; then
 	echo 'openLink=true' >> $confPath$confFile
 	echo 'copyLink=true' >> $confPath$confFile
 	echo 'savePath="~/Documents/screen.sbs/"' >> $confPath$confFile
-	echo 'uploadUrl="https://upload.screen.sbs/"' >> $confPath$confFile
+	echo 'uploadUrl="https://screen.sbs/upload/"' >> $confPath$confFile
 	echo 'token=""' >> $confPath$confFile
 fi
 source $confPath$confFile
@@ -51,7 +51,7 @@ function text {
 #   $1 file extension
 #     .txt, .png, (.mp4)
 function upload {
-	response=`curl -sF "file=@${filePath}${1}" "$uploadUrl?token=$token"`
+	response=`curl -sF "file=@${filePath}${1}" "$uploadUrl$token"`
 
 	# assume upload was successful if response body starts with http
 	if [[ $response == http* ]]; then
