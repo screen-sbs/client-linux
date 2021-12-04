@@ -21,19 +21,11 @@ jobs:
 # artifacts
       - uses: actions/upload-artifact@v2
         with:
-          name: deb
-          path: build/deb/screen-sbs*_all.deb
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: rpm
-          path: build/rpm/RPMS/noarch/screen-sbs-*.noarch.rpm
+          path: build/out/*
 
 
 # release
       - uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            build/deb/screen-sbs*_all.deb
-            build/rpm/RPMS/noarch/screen-sbs-*.noarch.rpm
+          files: build/out/*
