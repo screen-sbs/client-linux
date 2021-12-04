@@ -1,4 +1,5 @@
 #!/bin/bash
+VERSION="git_version"
 
 confPath="~/.config/"
 confFile="screen-sbs.conf"
@@ -73,4 +74,18 @@ elif [ "$1" = "" ] || [ "$1" = "full" ] || [ "$1" = "fullscreen" ]; then
 	fullscreen
 elif [ "$1" = "text" ]; then
 	text
+elif [ "$1" = "version" ]; then
+	echo $VERSION
+else
+	echo "Usage:"
+	echo "  ${0} <option>"
+	echo "    Options:"
+	echo "      [empty], full, fullscreen"
+	echo "        Take fullscreen screenshot (across all screens)"
+	echo "      area"
+	echo "        Select an area to screenshot"
+	echo "      text"
+	echo "        Upload clipboard"
+	echo "      version"
+	echo "        Get installed version"
 fi

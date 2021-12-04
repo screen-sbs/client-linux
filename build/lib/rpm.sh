@@ -1,7 +1,7 @@
 #!/bin/bash
 source lib/params.sh
 
-mkdir rpm
+mkdir -p build/rpm
 
 echo "Name:       screen-sbs
 Version:    ${version}
@@ -21,11 +21,12 @@ screen-sbs uploader
 %install
 mkdir -p %{buildroot}/%{_bindir}
 install -m 0755 ../screen.sh %{buildroot}/%{_bindir}/screen-sbs
+sed -i "s/git_version/${version}-${revision}/g" %{buildroot}/%{_bindir}/screen-sbs
 
 %files
 %{_bindir}/screen-sbs
 
 %changelog" \
-> rpm/screen-sbs.spec
+> build/rpm/screen-sbs.spec
 
-rpmbuild -ba --build-in-place --define "_topdir $(pwd)/rpm" rpm/screen-sbs.spec
+rpmbuild -ba --build-in-place --define "_topdir $(pwd)/build/rpm" build/rpm/screen-sbs.spec
