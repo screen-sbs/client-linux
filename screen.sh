@@ -33,7 +33,7 @@ mkdir -p $dir
 filePath="$dir/$now"
 
 function area {
-	scrot -s "$filePath.png"
+	scrot -s --line mode=edge "$filePath.png"
 	upload ".png"
 }
 
