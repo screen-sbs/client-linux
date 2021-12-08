@@ -16,6 +16,8 @@ function config() {
 		savePath="~/Documents/screen.sbs/"
 		uploadUrl="https://screen.sbs/upload/"
 		token=""
+		limitFullscreen=false
+		fullscreenArea="0,0,1920,1080"
 
 		mkdir -p $confPath
 		touch $confPath$confFile
@@ -27,6 +29,10 @@ function config() {
 	read -e -p "Copy link after uploading? (true/false): " -i "$copyLink" copyLink
 	read -e -p "Upload URL: " -i "$uploadUrl" uploadUrl
 	read -e -p "Upload token: " -i "$token" token
+	read -e -p "Limit fullscreen to specific area (screen)? (true/false): " -i "$limitFullscreen" limitFullscreen
+	if [ "$limitFullscreen" = true ] ; then
+    	read -e -p "Fullscreen area (x,y,w,h): " -i "$fullscreenArea" fullscreenArea
+	fi
 
 	{
 		echo "saveLocally=${saveLocally}"
@@ -35,6 +41,8 @@ function config() {
 		echo "copyLink=${copyLink}"
 		echo "uploadUrl=${uploadUrl}"
 		echo "token=${token}"
+		echo "limitFullscreen=${limitFullscreen}"
+		echo "fullscreenArea=${fullscreenArea}"
 	} > $confPath$confFile
 }
 
@@ -58,14 +66,18 @@ if [ "$saveLocally" = false ] ; then
     savePath="/tmp/"
 fi
 
-
 function area {
 	scrot -s --line mode=edge "$filePath.png"
 	upload ".png"
 }
 
 function fullscreen {
-	scrot -q 50 "$filePath.png"
+	if [ "$saveLocally" = true ] ; then
+    	scrot -a $fullscreenArea -q 50 "$filePath.png"
+	else
+		scrot -q 50 "$filePath.png"
+	fi
+
 	upload ".png"
 }
 
