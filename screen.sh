@@ -78,19 +78,33 @@ function text {
 #   $1 file extension
 #     .txt, .png, (.mp4)
 function upload {
-	response=`curl -sF "file=@${filePath}${1}" "$uploadUrl$token"`
+	response=`curl -o - -w ";%{http_code}\n" -sF "file=@${filePath}${1}" "$uploadUrl$token"`
 
-	# assume upload was successful if response body starts with http
-	if [[ $response == http* ]]; then
-		echo $response
+	IFS=";" read -ra response <<< "$response"
+	body="${response[0]}"
+	status="${response[1]}"
+
+	if [ "$status" = "201" ]; then
+		echo $body
 		if [ "$copyLink" = true ]; then
 			echo $response | xclip -selection "clipboard"
 		fi
 		if [ "$openLink" = true ]; then
 			xdg-open $response
 		fi
+	elif [ "$status" = "400" ]; then
+		echo "Uploaded file was emtpy"
+		echo "Check your paths and permissions"
+		echo "$0 config"
+	elif [ "$status" = "401" ]; then
+		echo "Invalid upload token!"
+		echo "Use $0 config to change your token"
+	elif [ "$status" = "500" ]; then
+		echo "Server error while handling upload"
 	else
-		echo "error while uploading"
+		echo $status
+		echo "Error while uploading"
+		echo "Check your upload url with $0 config"
 	fi
 }
 
