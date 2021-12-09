@@ -8,6 +8,7 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 - Capture fullscreen screenshot & upload
   - area can be limited to only capture one screen
 - Capture area screenshot & upload
+  - (Drag for area, click for window)
 - Upload clipboard (Ctrl+C clipboard)
 
 #### Requirements
