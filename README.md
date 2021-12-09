@@ -4,6 +4,12 @@
 Requires access to a (self-)hosted instance of the [screen.sbs server](https://github.com/screen-sbs/server)
 <br>
 
+### Features
+- Capture fullscreen screenshot & upload
+  - area can be limited to only capture one screen
+- Capture area screenshot & upload
+- Upload clipboard (Ctrl+C clipboard)
+
 #### Requirements
 - curl
 - xclip
