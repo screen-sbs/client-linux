@@ -4,6 +4,8 @@
 Requires access to a (self-)hosted instance of the [screen.sbs server](https://github.com/screen-sbs/server)
 <br>
 
+### [Preview Video](https://screen.sbs/vcogk49hp5j)
+
 ### Features
 - Capture fullscreen screenshot & upload
   - area can be limited to only capture one screen
