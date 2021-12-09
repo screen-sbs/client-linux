@@ -1,5 +1,8 @@
 # screen.sbs
 ## Linux CLI Client
+### Self-hosted Screenshot & Code/Text Sharing
+Requires access to a (self-)hosted instance of the [screen.sbs server](https://github.com/screen-sbs/server)
+<br>
 
 #### Requirements
 - curl
@@ -7,27 +10,15 @@
 - scrot
 
 #### Installation
-##### Option 1: Install package
-- Debian/Ubuntu: ```apt install ./screen-sbs*.deb```
-- Fedora: ```dnf install ./screen-sbs*.rpm```
-- Edit config file ```~/.config/screen-sbs.conf```
-- Client will be available as ```screen-sbs```
-
-##### Option 2: Manual
-- Install requirements
-  - Debian/Ubuntu: ```apt install curl xclip scrot```
-  - Fedora: ```dnf install curl xclip scrot```
-- Download ```screen-sbs.sh``` from [latest release](https://github.com/screen-sbs/client-linux/releases/latest)
-  - Preferrably place it in ```/opt/screen-sbs/``` or similiar
-- make ```screen-sbs.sh``` executable
-  - ```chmod +x screen-sbs.sh```
-- make ```screen-sbs.sh``` globally available
-  - ```ln -s screen-sbs.sh /usr/local/bin/screen-sbs```
-- Edit config file ```~/.config/screen-sbs.conf```
-- Client will be available as ```screen-sbs```
-
+- For Debian/Ubuntu and RHEL/Fedora packages are available
+- For everything else use the .sh bash script
+  - Make sure you meet the requirements listed above
+  - Symlink to /usr/local/bin/screen-sbs or similiar
+- Always download from the [releases page](https://github.com/screen-sbs/client-linux/releases/latest)
 
 #### Usage
+- Setup config file
+  - ```screen-sbs config```
 - Take fullscreen screenshot & upload
   - ```screen-sbs``` or
   - ```screen-sbs full``` or
