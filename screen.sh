@@ -21,6 +21,7 @@ function config() {
 		enableRecording=true
 		recordArea="0,0,1920,1080"
 		recordDuration="10"
+		recordCountdown=true
 
 		mkdir -p $confPath
 		touch $confPath$confFile
@@ -42,6 +43,7 @@ function config() {
 	if [ "$enableRecording" = true ] ; then
     	read -e -p "Video recording area (x,y,w,h): " -i "$recordArea" recordArea
 		read -e -p "Recording duration (seconds): " -i "$recordDuration" recordDuration
+		read -e -p "Enable notification countdown before recording? (true/false): " -i "$recordCountdown" recordCountdown
 	fi
 	
 
@@ -57,6 +59,7 @@ function config() {
 		echo "enableRecording=${enableRecording}"
 		echo "recordArea=${recordArea}"
 		echo "recordDuration=${recordDuration}"
+		echo "recordCountdown=${recordCountdown}"
 	} > $confPath$confFile
 }
 
@@ -79,6 +82,11 @@ fi
 if [ "$saveLocally" = false ] ; then
     savePath="/tmp/"
 fi
+
+function log() {
+	echo $1
+	notify-send -i screen-sbs "screen-sbs" "$1"
+}
 
 function area {
 	scrot -s --line mode=edge "$filePath.png"
@@ -104,6 +112,14 @@ function video {
 	if [ "$enableRecording" = true ] ; then
 		IFS="," read -ra recordArea <<< "$recordArea"
 
+		if [ "$recordCountdown" = true ] ; then
+			for i in {3..1}
+			do
+				notify-send -i screen-sbs -t 1000 "screen-sbs" "Recording in ${i}"
+				sleep 1
+			done
+		fi
+
 		ffmpeg -loglevel quiet -f x11grab -y -t ${recordDuration} -r 25 \
 			-s ${recordArea[2]}x${recordArea[3]} \
 			-i :0.0+${recordArea[0]},${recordArea[1]} \
@@ -111,9 +127,11 @@ function video {
 		exitCode=$?
 
 		if [ "$exitCode" != "0" ]; then
-			echo "Error while recording using ffmpeg, exit code $exitCode"
+			log "Error while recording using ffmpeg, exit code $exitCode"
 			exit $exitCode
 		fi
+
+		log "Recording finished.\nProcessing.."
 
 		ffmpeg -an -loglevel quiet -i /tmp/screen-sbs-recording.avi \
 			-vcodec libx264 -pix_fmt yuv420p \
@@ -121,7 +139,7 @@ function video {
 		exitCode=$?
 
 		if [ "$exitCode" != "0" ]; then
-			echo "Error while encoding recording using ffmpeg, exit code $exitCode"
+			log "Error while encoding recording using ffmpeg, exit code $exitCode"
 			exit $exitCode
 		fi
 
@@ -129,7 +147,7 @@ function video {
 
 		rm /tmp/screen-sbs-recording.avi
 	else
-		echo "Recording is disabled, use '$0 config' to enable recording"
+		log "Recording is disabled, use '$0 config' to enable recording"
 		exit 1
 	fi
 }
@@ -145,25 +163,25 @@ function upload {
 	status="${response[1]}"
 
 	if [ "$status" = "201" ]; then
-		echo $body
+		log "$body"
 		if [ "$copyLink" = true ]; then
-			echo $response | xclip -selection "clipboard"
+			echo $body | xclip -selection "clipboard"
 		fi
 		if [ "$openLink" = true ]; then
-			xdg-open $response
+			xdg-open $body
 		fi
 	elif [ "$status" = "400" ]; then
-		echo "Uploaded file was emtpy"
+		log "Uploaded file was emtpy"
 		echo "Check your paths and permissions"
 		echo "$0 config"
 	elif [ "$status" = "401" ]; then
-		echo "Invalid upload token!"
+		log "Invalid upload token!"
 		echo "Use $0 config to change your token"
 	elif [ "$status" = "500" ]; then
-		echo "Server error while handling upload"
+		log "Server error while handling upload"
 	else
 		echo $status
-		echo "Error while uploading"
+		log "Error while uploading"
 		echo "Check your upload url with $0 config"
 	fi
 }

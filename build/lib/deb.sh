@@ -2,9 +2,10 @@
 source lib/params.sh
 
 buildName="screen-sbs_${version}-${revision}_all"
-mkdir -p build/deb/$buildName/{usr/bin,DEBIAN}
+mkdir -p build/deb/$buildName/{usr/bin,usr/share/icons,DEBIAN}
 cd build/deb
 cp ../../../screen.sh $buildName/usr/bin/screen-sbs
+cp ../../../screen-sbs.png $buildName/usr/share/icons/
 
 sed -i "s/git_version/${version}-${revision}/g" $buildName/usr/bin/screen-sbs
 

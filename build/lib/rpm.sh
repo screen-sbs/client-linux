@@ -19,12 +19,15 @@ screen-sbs uploader
 %build
 
 %install
+mkdir -p %{buildroot}/%{_prefix}/share/icons/
+cp ../screen-sbs.png %{buildroot}/%{_prefix}/share/icons/screen-sbs.png
 mkdir -p %{buildroot}/%{_bindir}
 install -m 0755 ../screen.sh %{buildroot}/%{_bindir}/screen-sbs
 sed -i "s/git_version/${version}-${revision}/g" %{buildroot}/%{_bindir}/screen-sbs
 
 %files
 %{_bindir}/screen-sbs
+%{_prefix}/share/icons/screen-sbs.png
 
 %changelog" \
 > build/rpm/screen-sbs.spec
