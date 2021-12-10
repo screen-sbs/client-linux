@@ -31,15 +31,16 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 - Setup config file
   - ```screen-sbs config```
 - Take fullscreen screenshot & upload
-  - ```screen-sbs``` or
   - ```screen-sbs full``` or
   - ```screen-sbs fullscreen```
 - Take selection screenshot & upload
   - ```screen-sbs area```
-- Record video (area defined in config)
+- Record video (fullscreen/area defined in config)
   - ```screen-sbs video```
 - Upload clipboard
   - ```screen-sbs text```
+- ~~Interactive menu~~ (not implemented yet)
+  - ```screen-sbs``` 
 
 
 #### Keybinds
