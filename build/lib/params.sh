@@ -8,8 +8,6 @@ else
 	version=$1
 fi
 
-IFS="-"
-read -a versArr <<< "$version"
-IFS=""
+IFS="-" read -a versArr <<< "$version"
 version="${versArr[0]}"
 revision="${versArr[1]}"
