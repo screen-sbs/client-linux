@@ -1,6 +1,6 @@
 # screen.sbs
 ## Linux CLI Client
-### Self-hosted Screenshot & Code/Text Sharing
+### Self-hosted Screenshot, Video & Code/Text Sharing
 Requires access to a (self-)hosted instance of the [screen.sbs server](https://github.com/screen-sbs/server)
 <br>
 
@@ -9,14 +9,16 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 ### Features
 - Capture fullscreen screenshot & upload
   - area can be limited to only capture one screen
-- Capture area screenshot & upload
+- Capture area screenshot from selection & upload
   - (Drag for area, click for window)
+- Capture video (predefined area/fullscreen)
 - Upload clipboard (Ctrl+C clipboard)
 
 #### Requirements
 - curl
 - xclip
 - scrot
+- ffmpeg
 
 #### Installation
 - For Debian/Ubuntu and RHEL/Fedora packages are available
@@ -34,6 +36,8 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
   - ```screen-sbs fullscreen```
 - Take selection screenshot & upload
   - ```screen-sbs area```
+- Record video (area defined in config)
+  - ```screen-sbs video```
 - Upload clipboard
   - ```screen-sbs text```
 

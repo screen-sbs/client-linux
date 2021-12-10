@@ -18,6 +18,9 @@ function config() {
 		token=""
 		limitFullscreen=false
 		fullscreenArea="0,0,1920,1080"
+		enableRecording=true
+		recordArea="0,0,1920,1080"
+		recordDuration="10"
 
 		mkdir -p $confPath
 		touch $confPath$confFile
@@ -29,10 +32,18 @@ function config() {
 	read -e -p "Copy link after uploading? (true/false): " -i "$copyLink" copyLink
 	read -e -p "Upload URL: " -i "$uploadUrl" uploadUrl
 	read -e -p "Upload token: " -i "$token" token
+
 	read -e -p "Limit fullscreen to specific area (screen)? (true/false): " -i "$limitFullscreen" limitFullscreen
 	if [ "$limitFullscreen" = true ] ; then
     	read -e -p "Fullscreen area (x,y,w,h): " -i "$fullscreenArea" fullscreenArea
 	fi
+
+	read -e -p "Enable video recording? (true/false): " -i "$enableRecording" enableRecording
+	if [ "$enableRecording" = true ] ; then
+    	read -e -p "Video recording area (x,y,w,h): " -i "$recordArea" recordArea
+		read -e -p "Recording duration (seconds): " -i "$recordDuration" recordDuration
+	fi
+	
 
 	{
 		echo "saveLocally=${saveLocally}"
@@ -43,6 +54,9 @@ function config() {
 		echo "token=${token}"
 		echo "limitFullscreen=${limitFullscreen}"
 		echo "fullscreenArea=${fullscreenArea}"
+		echo "enableRecording=${enableRecording}"
+		echo "recordArea=${recordArea}"
+		echo "recordDuration=${recordDuration}"
 	} > $confPath$confFile
 }
 
@@ -86,9 +100,43 @@ function text {
 	upload ".txt"
 }
 
+function video {
+	if [ "$enableRecording" = true ] ; then
+		IFS="," read -ra recordArea <<< "$recordArea"
+
+		ffmpeg -loglevel quiet -f x11grab -y -t ${recordDuration} -r 25 \
+			-s ${recordArea[2]}x${recordArea[3]} \
+			-i :0.0+${recordArea[0]},${recordArea[1]} \
+			-vcodec huffyuv /tmp/screen-sbs-recording.avi >/dev/null
+		exitCode=$?
+
+		if [ "$exitCode" != "0" ]; then
+			echo "Error while recording using ffmpeg, exit code $exitCode"
+			exit $exitCode
+		fi
+
+		ffmpeg -an -loglevel quiet -i /tmp/screen-sbs-recording.avi \
+			-vcodec libx264 -pix_fmt yuv420p \
+			-profile:v baseline ${filePath}.mp4 >/dev/null
+		exitCode=$?
+
+		if [ "$exitCode" != "0" ]; then
+			echo "Error while encoding recording using ffmpeg, exit code $exitCode"
+			exit $exitCode
+		fi
+
+		upload ".mp4"
+
+		rm /tmp/screen-sbs-recording.avi
+	else
+		echo "Recording is disabled, use '$0 config' to enable recording"
+		exit 1
+	fi
+}
+
 # required parameters:
 #   $1 file extension
-#     .txt, .png, (.mp4)
+#     .txt, .png, .mp4
 function upload {
 	response=`curl -o - -w ";%{http_code}\n" -sF "file=@${filePath}${1}" "$uploadUrl$token"`
 
@@ -132,6 +180,8 @@ elif [ "$1" = "" ] || [ "$1" = "full" ] || [ "$1" = "fullscreen" ]; then
 	fullscreen
 elif [ "$1" = "text" ]; then
 	text
+elif [ "$1" = "video" ]; then
+	video
 elif [ "$1" = "version" ]; then
 	echo $VERSION
 elif [ "$1" = "config" ]; then
@@ -146,6 +196,8 @@ else
 	echo "        Select an area to screenshot"
 	echo "      text"
 	echo "        Upload clipboard"
+	echo "      video"
+	echo "        Record video (area defined in config)"
 	echo "      config <optional:default>"
 	echo "        Setup config file, use config default to start setup with default values"
 	echo "      version"
