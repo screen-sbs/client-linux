@@ -39,6 +39,7 @@ function config() {
 		saveLocally=true
 		openLink=true
 		copyLink=true
+		linkNotification=true
 		savePath="~/Documents/screen.sbs/"
 		uploadUrl="https://screen.sbs/upload/"
 		token=""
@@ -58,6 +59,7 @@ function config() {
 	read -e -p "Local save path: " -i $savePath savePath
 	read -e -p "Open link after uploading? (true/false): " -i "$openLink" openLink
 	read -e -p "Copy link after uploading? (true/false): " -i "$copyLink" copyLink
+	read -e -p "Show link notification after uploading? (true/false): " -i "$linkNotification" linkNotification
 	read -e -p "Upload URL: " -i "$uploadUrl" uploadUrl
 	read -e -p "Upload token: " -i "$token" token
 
@@ -70,7 +72,7 @@ function config() {
 	if [ "$enableRecording" = true ]; then
     	read -e -p "Video recording area (x,y,w,h): " -i "$recordArea" recordArea
 		read -e -p "Recording duration (seconds): " -i "$recordDuration" recordDuration
-		read -e -p "Enable notification countdown before recording? (true/false): " -i "$recordCountdown" recordCountdown
+		read -e -p "Enable notification countdown before recording (Don't use on gnome)? (true/false): " -i "$recordCountdown" recordCountdown
 	fi
 	
 
@@ -80,6 +82,7 @@ function config() {
 		echo "savePath=${savePath}"
 		echo "openLink=${openLink}"
 		echo "copyLink=${copyLink}"
+		echo "linkNotification=${linkNotification}"
 		echo "uploadUrl=${uploadUrl}"
 		echo "token=${token}"
 		echo "limitFullscreen=${limitFullscreen}"
@@ -189,10 +192,16 @@ function upload {
 	# see https://github.com/screen-sbs/server/blob/master/README.md#status-codes
 	# for all status codes
 	if [ "$status" = "201" ]; then
-		echo "$body"
 		if [ "$copyLink" = true ]; then
 			echo $body | xclip -selection "clipboard"
-			log "Link copied to clipboard"
+			if [ "$linkNotification" = false ]; then
+				log "Link copied to clipboard"
+			fi
+		fi
+		if [ "$linkNotification" = true ]; then
+			log $body
+		else
+			echo $body
 		fi
 		if [ "$openLink" = true ]; then
 			xdg-open $body
