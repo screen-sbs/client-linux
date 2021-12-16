@@ -35,7 +35,7 @@ if ! [ -x "$(command -v notify-send)" ];then
 fi
 
 # check wether ffmpeg is available
-if ! [ -x "$(command -v f1fmpeg)" ];then
+if ! [ -x "$(command -v ffmpeg)" ];then
 	echo "ffmpeg not available, disabling video recording.."
 	enableRecording=false
 fi
