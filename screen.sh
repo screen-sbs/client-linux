@@ -112,20 +112,19 @@ function log() {
 	fi
 }
 
-function area {
-	# get screenshot from user selected area
-	# --line mode=edge fixes selection border showing up in screenshots
-	scrot -s --line mode=edge "$filePath.png"
-	upload ".png"
-}
-
-function fullscreen {
-	# get fullscreen screenshot
-
-	if [ "$limitFullscreen" = true ]; then
-    	scrot -a $fullscreenArea -q 50 "$filePath.png"
+# parameters:
+# $1 - area: screenshot userselected area
+# $1 - [any]: fullscreen
+function screenshot {
+	if [ "$1" = "area" ]; then
+		# --line mode=edge fixes selection border showing up in screenshots
+		scrot -s --line mode=edge "$filePath.png"
 	else
-		scrot -q 50 "$filePath.png"
+		if [ "$limitFullscreen" = true ]; then
+    		scrot -a $fullscreenArea -q 50 "$filePath.png"
+		else
+			scrot -q 50 "$filePath.png"
+		fi
 	fi
 
 	upload ".png"
@@ -265,10 +264,10 @@ function interactive {
 	case $selection in
 
   		1)
-    		fullscreen
+    		screenshot "fullscreen"
     		;;
 		2)
-    		area
+    		screenshot "area"
     		;;
 		3)
     		text
@@ -296,9 +295,9 @@ filePath="$dir/$now"
 if [ "$1" = "" ]; then
 	interactive
 elif [ "$1" = "area" ]; then
-	area
+	screenshot "area"
 elif [ "$1" = "full" ] || [ "$1" = "fullscreen" ]; then
-	fullscreen
+	screenshot "fullscreen"
 elif [ "$1" = "text" ]; then
 	text
 elif [ "$1" = "video" ]; then
