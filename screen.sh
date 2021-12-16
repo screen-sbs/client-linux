@@ -133,7 +133,8 @@ function screenshot {
 		fi
 	fi
 
-	upload ".png"
+	filePath="${filePath}.png"
+	upload
 }
 
 function text {
@@ -146,7 +147,9 @@ function text {
 		# get clipboard text (ctrl+c clipboard)
 		xclip -selection "clipboard" -o > "$filePath.txt"
     fi
-	upload ".txt"
+
+	filePath="${filePath}.txt"
+	upload
 }
 
 function video {
@@ -189,7 +192,8 @@ function video {
 			exit $exitCode
 		fi
 
-		upload ".mp4"
+		filePath="${filePath}.mp4"
+		upload
 
 		# manually remove the .avi recording as it tends to be quite big
 		rm /tmp/screen-sbs-recording.avi
@@ -199,12 +203,9 @@ function video {
 	fi
 }
 
-# required parameters:
-#   $1 file extension
-#     .txt, .png, .mp4
 function upload {
 	# upload, get body & http status code
-	response=`curl -o - -w ";%{http_code}\n" -sF "file=@${filePath}${1}" "$uploadUrl$token"`
+	response=`curl -o - -w ";%{http_code}\n" -sF "file=@${filePath}" "$uploadUrl$token"`
 
 	# split status code from body
 	IFS=";" read -ra response <<< "$response"
@@ -329,6 +330,18 @@ elif [ "$1" = "video" ]; then
 		recordDuration=$2
 	fi
 	video
+elif [ "$1" = "file" ]; then
+	if [ -z "$2" ]; then
+		log "No file specified"
+		exit 1
+	fi
+	if [[ $2 == *.png ]] || [[ $2 == *.txt ]] || [[ $2 == *.mp4 ]]; then
+		filePath="$2"
+		upload
+	else
+		log "Invalid file specified. Supported formats: png, mp4, txt"
+		exit 1
+	fi
 elif [ "$1" = "version" ]; then
 	echo $VERSION
 elif [ "$1" = "config" ]; then
@@ -348,6 +361,8 @@ else
 	echo "        Upload clipboard"
 	echo "      video <optional:duration>"
 	echo "        Record video (area defined in config)"
+	echo "      file <filepath>"
+	echo "        Upload file: .png, .txt, .mp4"
 	echo "      config <optional:default>"
 	echo "        Setup config file, use config default to start setup with default values"
 	echo "      version"

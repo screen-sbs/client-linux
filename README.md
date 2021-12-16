@@ -49,6 +49,8 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
   - ```screen-sbs text```
 - Upload pipe
   - ```echo "upload deez nuts" | screen-sbs text```
+- Upload file (.png, .mp4, .txt)
+  - ```screen-sbs file <filepath>```
 - Interactive menu
   - ```screen-sbs``` 
 
