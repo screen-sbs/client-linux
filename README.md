@@ -13,6 +13,7 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
   - (Drag for area, click for window)
 - Capture video (predefined area/fullscreen)
 - Upload clipboard (Ctrl+C clipboard)
+- Upload stdin (pipe) text
 
 #### Requirements
 - curl
@@ -21,11 +22,14 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 - xdg-utils
 - bash
 - Optional: ffmpeg (required for video recording)
-- Optional: notify-send
+- Optional: notify-send (libnotify)
 - Optional: dialog
 
 #### Installation
 - For Debian/Ubuntu and RHEL/Fedora packages are available
+  - Optional requirements not installed automatically:
+    - ```apt install ffmpeg dialog libnotify-bin```
+    - ```dnf install ffmpeg dialog libnotify```
 - For everything else use the .sh bash script
   - Make sure you meet the requirements listed above
   - Symlink to /usr/local/bin/screen-sbs or similiar
