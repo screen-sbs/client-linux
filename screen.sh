@@ -135,7 +135,6 @@ function text {
 	if [ -p /dev/stdin ]; then
 		# get stdin (pipe)
 		input=$(</dev/stdin)
-        echo "test"
 		echo "$input" > "$filePath.txt"
     else
 		# get clipboard text (ctrl+c clipboard)
