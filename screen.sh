@@ -24,8 +24,14 @@ if [ "$token" = "" ]; then
 fi
 
 # if user doesn't want to save locally we'll put the files in /tmp/
-if [ "$saveLocally" = false ] ; then
+if [ "$saveLocally" = false ]; then
     savePath="/tmp/"
+fi
+
+# check wether notify-send is available
+if ! [ -x "$(command -v notify-send)" ];then
+	echo "notify-send not available, disabling all notifications"
+	disableNotifications=true
 fi
 
 # optional parameter
@@ -49,6 +55,7 @@ function config() {
 		recordArea="0,0,1920,1080"
 		recordDuration="10"
 		recordCountdown=true
+		disableNotifications=false
 
 		mkdir -p $confPath
 		touch $confPath$confFile
@@ -59,6 +66,7 @@ function config() {
 	read -e -p "Local save path: " -i $savePath savePath
 	read -e -p "Open link after uploading? (true/false): " -i "$openLink" openLink
 	read -e -p "Copy link after uploading? (true/false): " -i "$copyLink" copyLink
+	read -e -p "Disable notifications? (true/false): " -i "$disableNotifications" disableNotifications
 	read -e -p "Show link notification after uploading? (true/false): " -i "$linkNotification" linkNotification
 	read -e -p "Upload URL: " -i "$uploadUrl" uploadUrl
 	read -e -p "Upload token: " -i "$token" token
@@ -82,6 +90,7 @@ function config() {
 		echo "savePath=${savePath}"
 		echo "openLink=${openLink}"
 		echo "copyLink=${copyLink}"
+		echo "disableNotifications=${disableNotifications}"
 		echo "linkNotification=${linkNotification}"
 		echo "uploadUrl=${uploadUrl}"
 		echo "token=${token}"
@@ -98,7 +107,9 @@ function config() {
 #   $1 text
 function log() {
 	echo -e $1
-	notify-send -i screen-sbs "screen-sbs" "$1"
+	if [ "$disableNotifications" = false ]; then
+		notify-send -i screen-sbs "screen-sbs" "$1"
+	fi
 }
 
 function area {
@@ -133,7 +144,7 @@ function video {
 
 		# some notification services ignore the display time (-t)
 		# so we allow the user to disable the countdown
-		if [ "$recordCountdown" = true ] ; then
+		if [ "$recordCountdown" = true ] && [ "$disableNotifications" = false ]; then
 			for i in {3..1}
 			do
 				notify-send -i screen-sbs -t 1000 "screen-sbs" "Recording in ${i}"
