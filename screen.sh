@@ -30,8 +30,14 @@ fi
 
 # check wether notify-send is available
 if ! [ -x "$(command -v notify-send)" ];then
-	echo "notify-send not available, disabling all notifications"
+	echo "notify-send not available, disabling all notifications.."
 	disableNotifications=true
+fi
+
+# check wether ffmpeg is available
+if ! [ -x "$(command -v f1fmpeg)" ];then
+	echo "ffmpeg not available, disabling video recording.."
+	enableRecording=false
 fi
 
 # optional parameter
@@ -188,7 +194,7 @@ function video {
 		# manually remove the .avi recording as it tends to be quite big
 		rm /tmp/screen-sbs-recording.avi
 	else
-		log "Recording is disabled, use '$0 config' to enable recording"
+		log "Recording is disabled, install ffmpeg or use '$0 config' to enable recording"
 		exit 1
 	fi
 }

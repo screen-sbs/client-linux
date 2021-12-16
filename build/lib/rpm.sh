@@ -9,7 +9,7 @@ Release:    ${revision}
 Summary:    screen-sbs
 BuildArch:  noarch
 License:    undefined
-Requires:    scrot, xclip, curl, xdg-utils, ffmpeg, bash
+Requires:    bash, scrot, xclip, curl, xdg-utils
 
 %description
 screen-sbs uploader

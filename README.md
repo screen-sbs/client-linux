@@ -18,9 +18,9 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 - curl
 - xclip
 - scrot
-- ffmpeg
 - xdg-utils
 - bash
+- Optional: ffmpeg (required for video recording)
 - Optional: notify-send
 - Optional: dialog
 
