@@ -244,7 +244,8 @@ function upload {
 	fi
 }
 
-
+# interactive menu
+# uses dialog if installed, otherwise a simple native bash menu
 function interactive {
 	options=("Screenshot: fullscreen" "Screenshot: area" "Text from clipboard" "Video" "config" "quit")
 
@@ -259,7 +260,6 @@ function interactive {
 
 		selection=`eval $cmd`
 	else
-		PS3="Selection: "
 		i=1
 		for option in "${options[@]}"
 		do
