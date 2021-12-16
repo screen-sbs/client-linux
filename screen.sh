@@ -309,6 +309,9 @@ elif [ "$1" = "full" ] || [ "$1" = "fullscreen" ]; then
 elif [ "$1" = "text" ]; then
 	text
 elif [ "$1" = "video" ]; then
+	if [ -n "$2" ]; then
+		recordDuration=$2
+	fi
 	video
 elif [ "$1" = "version" ]; then
 	echo $VERSION
@@ -327,8 +330,9 @@ else
 	echo "        Select an area to screenshot"
 	echo "      text"
 	echo "        Upload clipboard"
-	echo "      video"
+	echo "      video <duration>"
 	echo "        Record video (area defined in config)"
+	echo "        duration is optional, if not set config value is used"
 	echo "      config <optional:default>"
 	echo "        Setup config file, use config default to start setup with default values"
 	echo "      version"
