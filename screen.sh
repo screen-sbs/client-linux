@@ -238,13 +238,63 @@ function upload {
 }
 
 
+function interactive {
+	options=("Screenshot: fullscreen" "Screenshot: area" "Text from clipboard" "Video" "config" "quit")
+
+	if [ -x "$(command -v dialog)" ]; then
+		cmd="dialog --menu --output-fd 1 \"screen.sbs\" 0 0 0"
+		i=1
+		for option in "${options[@]}"
+		do
+			cmd="${cmd} ${i} \"${option}\""
+			((i=i+1))
+		done
+
+		selection=`eval $cmd`
+	else
+		PS3="Selection: "
+		i=1
+		for option in "${options[@]}"
+		do
+			echo "${i}) ${option}"
+			((i=i+1))
+		done
+		read -e -p "Selection: " selection
+	fi
+
+	case $selection in
+
+  		1)
+    		fullscreen
+    		;;
+		2)
+    		area
+    		;;
+		3)
+    		text
+    		;;
+		4)
+    		video
+    		;;
+		5)
+    		config
+    		;;
+		6)
+    		exit 0
+    		;;
+  		*)
+    		echo "ne"
+    		;;
+	esac
+}
+
 now=$(date +"%Y-%m-%d_%H-%M-%S-%3N")
 dir="${savePath/#\~/$HOME}"
 mkdir -p $dir
 filePath="$dir/$now"
 
 if [ "$1" = "" ]; then
-	echo "interactive menu not implemented, yet"
+	interactive
 elif [ "$1" = "area" ]; then
 	area
 elif [ "$1" = "full" ] || [ "$1" = "fullscreen" ]; then
@@ -262,7 +312,9 @@ else
 	echo "Usage:"
 	echo "  ${0} <option>"
 	echo "    Options:"
-	echo "      [empty], full, fullscreen"
+	echo "		[empty]"
+	echo "			Interactive menu"
+	echo "      full, fullscreen"
 	echo "        Take fullscreen screenshot (across all screens)"
 	echo "      area"
 	echo "        Select an area to screenshot"

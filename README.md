@@ -19,6 +19,10 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 - xclip
 - scrot
 - ffmpeg
+- xdg-utils
+- bash
+- Optional: notify-send
+- Optional: dialog
 
 #### Installation
 - For Debian/Ubuntu and RHEL/Fedora packages are available
@@ -39,7 +43,7 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
   - ```screen-sbs video```
 - Upload clipboard
   - ```screen-sbs text```
-- ~~Interactive menu~~ (not implemented yet)
+- Interactive menu
   - ```screen-sbs``` 
 
 
