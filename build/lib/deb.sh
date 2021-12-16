@@ -12,7 +12,7 @@ sed -i "s/git_version/${version}-${revision}/g" $buildName/usr/bin/screen-sbs
 echo "Package: screen-sbs
 Version: ${version}-${revision}
 Maintainer: mxve <hi@mxve.de>
-Depends: scrot, xclip, curl, xdg-utils, ffmpeg
+Depends: scrot, xclip, curl, xdg-utils, ffmpeg, bash
 Architecture: all
 Homepage: https://screen.sbs
 Description: screen.sbs uploader" \
