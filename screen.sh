@@ -131,8 +131,16 @@ function screenshot {
 }
 
 function text {
-	# get clipboard text (ctrl+c clipboard)
-	xclip -selection "clipboard" -o > "$filePath.txt"
+	touch "$filePath.txt"
+	if [ -p /dev/stdin ]; then
+		# get stdin (pipe)
+		input=$(</dev/stdin)
+        echo "test"
+		echo "$input" > "$filePath.txt"
+    else
+		# get clipboard text (ctrl+c clipboard)
+		xclip -selection "clipboard" -o > "$filePath.txt"
+    fi
 	upload ".txt"
 }
 

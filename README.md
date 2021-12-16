@@ -43,6 +43,8 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
   - ```screen-sbs video```
 - Upload clipboard
   - ```screen-sbs text```
+- Upload pipe
+  - ```echo "upload deez nuts" | screen-sbs text```
 - Interactive menu
   - ```screen-sbs``` 
 
