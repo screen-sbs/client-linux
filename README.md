@@ -14,6 +14,7 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 - Capture video (predefined area/fullscreen)
 - Upload clipboard (Ctrl+C clipboard)
 - Upload stdin (pipe) text
+- Upload file (.txt, .mp4, .png)
 
 #### Requirements
 - curl
