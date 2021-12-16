@@ -250,6 +250,7 @@ function interactive {
 	options=("Screenshot: fullscreen" "Screenshot: area" "Text from clipboard" "Video" "config" "quit")
 
 	if [ -x "$(command -v dialog)" ]; then
+		# build dialog menu from options
 		cmd="dialog --menu --output-fd 1 \"screen.sbs\" 0 0 0"
 		i=1
 		for option in "${options[@]}"
@@ -258,19 +259,24 @@ function interactive {
 			((i=i+1))
 		done
 
+		# run dialog
 		selection=`eval $cmd`
 	else
+		# fallback
+		# build simple list menu from options
 		i=1
 		for option in "${options[@]}"
 		do
 			echo "${i}) ${option}"
 			((i=i+1))
 		done
+
+		# get selection
 		read -e -p "Selection: " selection
 	fi
 
+	# handle selection, same for dialog & fallback
 	case $selection in
-
   		1)
     		screenshot "fullscreen"
     		;;
@@ -290,16 +296,20 @@ function interactive {
     		exit 0
     		;;
   		*)
-    		echo "ne"
+		  	echo "Invalid selection"
+    		interactive
     		;;
 	esac
 }
 
+# build path
 now=$(date +"%Y-%m-%d_%H-%M-%S-%3N")
+# evaluate ~
 dir="${savePath/#\~/$HOME}"
 mkdir -p $dir
 filePath="$dir/$now"
 
+# handle script parameters
 if [ "$1" = "" ]; then
 	interactive
 elif [ "$1" = "area" ]; then
@@ -309,6 +319,7 @@ elif [ "$1" = "full" ] || [ "$1" = "fullscreen" ]; then
 elif [ "$1" = "text" ]; then
 	text
 elif [ "$1" = "video" ]; then
+	# overrride recordDuration if $2 is set
 	if [ -n "$2" ]; then
 		recordDuration=$2
 	fi
@@ -330,9 +341,8 @@ else
 	echo "        Select an area to screenshot"
 	echo "      text"
 	echo "        Upload clipboard"
-	echo "      video <duration>"
+	echo "      video <optional:duration>"
 	echo "        Record video (area defined in config)"
-	echo "        duration is optional, if not set config value is used"
 	echo "      config <optional:default>"
 	echo "        Setup config file, use config default to start setup with default values"
 	echo "      version"
