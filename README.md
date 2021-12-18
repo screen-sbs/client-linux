@@ -22,6 +22,7 @@ Requires access to a (self-)hosted instance of the [screen.sbs server](https://g
 - scrot
 - xdg-utils
 - bash
+- jq
 - Optional: ffmpeg (required for video recording)
 - Optional: notify-send (libnotify)
 - Optional: dialog
