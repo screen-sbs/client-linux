@@ -53,7 +53,7 @@ function config() {
 		copyLink=true
 		linkNotification=true
 		savePath="~/Documents/screen.sbs/"
-		uploadUrl="https://screen.sbs/upload/"
+		serverUrl="https://screen.sbs/"
 		token=""
 		limitFullscreen=false
 		fullscreenArea="0,0,1920,1080"
@@ -74,7 +74,7 @@ function config() {
 	read -e -p "Copy link after uploading? (true/false): " -i "$copyLink" copyLink
 	read -e -p "Disable notifications? (true/false): " -i "$disableNotifications" disableNotifications
 	read -e -p "Show link notification after uploading? (true/false): " -i "$linkNotification" linkNotification
-	read -e -p "Upload URL: " -i "$uploadUrl" uploadUrl
+	read -e -p "Server URL: " -i "$serverUrl" serverUrl
 	read -e -p "Upload token: " -i "$token" token
 
 	read -e -p "Limit fullscreen to specific area (screen)? (true/false): " -i "$limitFullscreen" limitFullscreen
@@ -98,7 +98,7 @@ function config() {
 		echo "copyLink=${copyLink}"
 		echo "disableNotifications=${disableNotifications}"
 		echo "linkNotification=${linkNotification}"
-		echo "uploadUrl=${uploadUrl}"
+		echo "serverUrl=${serverUrl}"
 		echo "token=${token}"
 		echo "limitFullscreen=${limitFullscreen}"
 		echo "fullscreenArea=${fullscreenArea}"
@@ -204,8 +204,27 @@ function video {
 }
 
 function upload {
+	# get server configuration
+	serverCfg=`curl -so - -w ";%{http_code}\n" "${serverUrl}/config"`
+	# split status code from body
+	IFS=";" read -ra serverCfg <<< "$serverCfg"
+	# extract fileSizeLimit key
+	fileSizeLimit=`echo ${serverCfg[0]} | jq .fileSizeLimit`
+	# get size of file to upload
+	fileSize=`du -m ${filePath} | cut -f1`
+
+	if [[ "${serverCfg[1]}" -eq "000" ]]; then
+		log "Error while getting server config, internet or server offline?"
+		exit 1
+	fi
+
+	if [[ "$fileSize" -gt  "$fileSizeLimit" ]]; then
+		log "File size exceeds server limit of ${fileSizeLimit}MB (${fileSize}MB)"
+		exit 1
+	fi
+
 	# upload, get body & http status code
-	response=`curl -o - -w ";%{http_code}\n" -sF "file=@${filePath}" "$uploadUrl$token"`
+	response=`curl -so - -w ";%{http_code}\n" -F "file=@${filePath}" "${serverUrl}/upload/${token}"`
 
 	# split status code from body
 	IFS=";" read -ra response <<< "$response"
@@ -215,7 +234,11 @@ function upload {
 	# handle status codes
 	# see https://github.com/screen-sbs/server/blob/master/README.md#status-codes
 	# for all status codes
-	if [ "$status" = "201" ]; then
+	# 000 = unreachable
+	if [ "$status" = "000" ]; then
+		log "Error while uploading, internet or server offline?"
+		exit 1
+	elif [ "$status" = "201" ]; then
 		if [ "$copyLink" = true ]; then
 			echo $body | xclip -selection "clipboard"
 			if [ "$linkNotification" = false ]; then
